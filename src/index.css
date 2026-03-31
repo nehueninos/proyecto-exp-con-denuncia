@@ -1,3 +1,224 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 🔥 Configuración global del template */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: "Plus Jakarta Sans", Helvetica, Arial, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.625;
+    color: rgb(52, 71, 103);
+    margin: 0;
+    background: transparent;
+    opacity: 1;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+}
+
+/* 🔥 Variables del template (por si las usa algo) */
+:root {
+  --fc-daygrid-event-dot-width: 8px;
+  --google-font-color-materialiconstwotone: none;
+}
+
+/* 🔥 Animación que ya tenías */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+canvas {
+  filter: drop-shadow(0 0 40px rgba(59,130,246,0.4));
+}
+
+.loadingPage {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.1), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(47, 128, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, #04101d 0%, #071523 100%);
+}
+
+.loadingGlow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+.loadingGlowOne {
+  width: 300px;
+  height: 300px;
+  top: -80px;
+  left: -80px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.18), transparent 70%);
+}
+
+.loadingGlowTwo {
+  width: 360px;
+  height: 360px;
+  bottom: -100px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(47, 128, 255, 0.2), transparent 70%);
+}
+
+.loadingContainer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 40px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(10, 22, 39, 0.92), rgba(7, 17, 31, 0.96));
+  border: 1px solid rgba(120, 176, 255, 0.14);
+  box-shadow: var(--shadow-lg);
+  min-width: 280px;
+}
+
+.loadingLogoWrap {
+  margin-bottom: 16px;
+}
+
+.loadingLogo {
+  width: 90px;
+  animation: floatLogo 3s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+.loadingTitle {
+  color: #ffffff !important;
+  font-size: 1.4rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 4px !important;
+}
+
+.loadingSubtitle {
+  color: var(--accent-2) !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 18px !important;
+}
+
+.loadingSpinner {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 3px solid rgba(56, 189, 248, 0.2);
+  border-top: 3px solid #38bdf8;
+  animation: spin 0.9s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  color: var(--text-soft) !important;
+  font-size: 0.9rem !important;
+}
+
+.loadingPagePro {
+  animation: loadingPageFadeIn 0.45s ease;
+}
+
+@keyframes loadingPageFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.01);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.loadingContainerPro {
+  min-width: 340px;
+  max-width: 440px;
+  animation: loadingCardIn 0.55s ease;
+}
+
+@keyframes loadingCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loadingProgressWrap {
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 8px 0 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(120, 176, 255, 0.12);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.loadingProgressBar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2f80ff 0%, #38bdf8 60%, #7dd3fc 100%);
+  box-shadow:
+    0 0 16px rgba(56, 189, 248, 0.35),
+    inset 0 0 8px rgba(255, 255, 255, 0.18);
+  transition: width 0.16s ease;
+  position: relative;
+}
+
+.loadingProgressBar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.28) 100%
+  );
+}
+
+.loadingPercent {
+  color: #eaf6ff !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 10px !important;
+}

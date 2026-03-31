@@ -28,13 +28,13 @@ export function SearchBar({
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Buscar por nombre o número de expediente..."
+            placeholder="Buscar por nombre o número"
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
-        <div className="flex gap-2">
+       {/*  <div className="flex gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-colors ${
@@ -55,7 +55,7 @@ export function SearchBar({
               <span>Limpiar</span>
             </button>
           )}
-        </div>
+        </div> */}
       </div>
 
       {showFilters && (

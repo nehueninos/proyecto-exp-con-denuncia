@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Upload, X } from 'lucide-react';
 
 export function NewExpedienteForm({ user, onSubmit, onClose }) {
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [conciliacionUsers, setConciliacionUsers] = useState([]);
 
   const [formData, setFormData] = useState({
     numero: '',
@@ -13,21 +14,50 @@ export function NewExpedienteForm({ user, onSubmit, onClose }) {
     escritos: '',
     descripcion: '',
     articulo: '1',
-    estado: 'pendiente',
+    estado: 'activo',
     prioridad: 'media',
     localidad: 'Formosa_Capital',
+    usuarioAsignado: '',
     caratula: '',
     caratulaType: '',
   });
 
+  /* ================= FETCH CONCILIADORES ================= */
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem('token');
+
+        const res = await fetch('http://localhost:5000/api/by-area/conciliacion', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        setConciliacionUsers(data);
+      } catch (err) {
+        console.error('Error cargando conciliadores:', err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (typeof onSubmit !== 'function') {
+      console.error('❌ onSubmit no es una función');
+      return;
+    }
+
     setLoading(true);
 
     try {
       await onSubmit(formData);
-      onClose();
+      onClose && onClose();
     } catch (error) {
       console.error('Error al crear expediente:', error);
     } finally {
@@ -136,9 +166,46 @@ export function NewExpedienteForm({ user, onSubmit, onClose }) {
               <option value="5">Artículo 5</option>
               <option value="6">Artículo 6</option>
             </select>
+
+            {/* CONCILIADOR */}
+            <select
+              value={formData.usuarioAsignado}
+              onChange={(e) =>
+                setFormData({ ...formData, usuarioAsignado: e.target.value })
+              }
+              className="border p-3 rounded md:col-span-2"
+            >
+              <option value="">Seleccionar conciliador</option>
+              {conciliacionUsers.map((u) => (
+                <option key={u._id} value={u._id}>
+                  {u.name} ({u.username})
+                </option>
+              ))}
+            </select>
+
+            {/* LOCALIDAD */}
+            <select
+              value={formData.localidad}
+              onChange={(e) =>
+                setFormData({ ...formData, localidad: e.target.value })
+              }
+              className="border p-3 rounded md:col-span-2"
+            >
+              <option value="Formosa_Capital">Formosa Capital</option>
+              <option value="Clorinda">Clorinda</option>
+              <option value="El_Colorado">El Colorado</option>
+              <option value="Ingeniero_Juarez">Ingeniero Juárez</option>
+              <option value="Las_Lomitas">Las Lomitas</option>
+              <option value="Ibarreta">Ibarreta</option>
+              <option value="Laguna_Blanca">Laguna Blanca</option>
+              <option value="Comandante_Fontana">Comandante Fontana</option>
+              <option value="Palo_Santo">Palo Santo</option>
+              <option value="Espinillo">Espinillo</option>
+              <option value="Pirane">Pirané</option>
+            </select>
           </div>
 
-          {/* ===== CARÁTULA ===== */}
+          {/* CARÁTULA */}
           {formData.caratula ? (
             <div className="relative">
               {formData.caratulaType === 'application/pdf' ? (
@@ -148,7 +215,9 @@ export function NewExpedienteForm({ user, onSubmit, onClose }) {
               )}
               <button
                 type="button"
-                onClick={() => setFormData({ ...formData, caratula: '', caratulaType: '' })}
+                onClick={() =>
+                  setFormData({ ...formData, caratula: '', caratulaType: '' })
+                }
                 className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full"
               >
                 <X size={16} />
@@ -170,7 +239,9 @@ export function NewExpedienteForm({ user, onSubmit, onClose }) {
                 accept="image/*,application/pdf"
                 hidden
                 id="file"
-                onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+                onChange={(e) =>
+                  e.target.files?.[0] && handleFile(e.target.files[0])
+                }
               />
               <label htmlFor="file" className="cursor-pointer text-blue-600">
                 Seleccionar archivo
@@ -181,7 +252,9 @@ export function NewExpedienteForm({ user, onSubmit, onClose }) {
           <textarea
             placeholder="Descripción"
             value={formData.descripcion}
-            onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, descripcion: e.target.value })
+            }
             className="border p-3 rounded w-full"
             rows={4}
           />
@@ -190,7 +263,12 @@ export function NewExpedienteForm({ user, onSubmit, onClose }) {
             <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">
               Cancelar
             </button>
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-blue-600 text-white rounded">
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 bg-blue-600 text-white rounded flex items-center gap-2"
+            >
               <Plus size={16} /> Crear
             </button>
           </div>
